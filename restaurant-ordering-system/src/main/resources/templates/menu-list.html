@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Menu List</title>
+  </head>
+  <a href="/addMenu"> Add Menu Item </a>
+  <body>
+    <h1>Restaurant Menu</h1>
+
+    <table border="1">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Availability</th>
+      </tr>
+
+      <tr th:each="menu : ${menuList}">
+        <td th:text="${menu.id}"></td>
+        <td th:text="${menu.name}"></td>
+        <td th:text="${menu.category}"></td>
+        <td th:text="${menu.price}"></td>
+        <td th:text="${menu.availability}"></td>
+      </tr>
+    </table>
+  </body>
+</html>
