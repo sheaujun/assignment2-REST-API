@@ -1,28 +1,175 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Menu List</title>
+    <title>Menu Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
   </head>
-  <a href="/addMenu"> Add Menu Item </a>
-  <body>
-    <h1>Restaurant Menu</h1>
+  <body class="page-shell dashboard-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Dashboard Control Screen</div>
+        <h1>Menu Offerings Operations</h1>
+        <p class="subtitle">
+          Master menu catalog with image uploads, edits, and item lifecycle
+          controls.
+        </p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-note">
+          Security: Admin Authenticated<br />Device Integration Mode: Active
+          (Local DB)
+        </div>
+        <a class="ghost-button" href="/menu">Reset View</a>
+        <a class="primary-button" href="/addMenu">Draft Specialty</a>
+      </div>
+    </header>
 
-    <table border="1">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Availability</th>
-      </tr>
+    <section class="stats-grid">
+      <article class="stat-card accent-gold">
+        <span class="stat-label">Total Specialties</span>
+        <strong th:text="${totalSpecialties}">0</strong>
+        <span class="stat-caption">Items in master catalog</span>
+      </article>
+      <article class="stat-card accent-green">
+        <span class="stat-label">Active &amp; Available</span>
+        <strong th:text="${availableCount}">0</strong>
+        <span class="stat-caption">Ready for patrons to order</span>
+      </article>
+      <article class="stat-card accent-red">
+        <span class="stat-label">Kitchen Sold Out</span>
+        <strong th:text="${soldOutCount}">0</strong>
+        <span class="stat-caption">Needs restocking attention</span>
+      </article>
+      <article class="stat-card accent-slate">
+        <span class="stat-label">Archived / Hidden</span>
+        <strong th:text="${archivedCount}">0</strong>
+        <span class="stat-caption">Hidden from digital menu</span>
+      </article>
+      <article class="stat-card accent-blue">
+        <span class="stat-label">Average Menu Price</span>
+        <strong th:text="${'$' + #numbers.formatDecimal(averagePrice, 1, 2)}"
+          >$0.00</strong
+        >
+        <span class="stat-caption">Balanced premium average</span>
+      </article>
+    </section>
 
-      <tr th:each="menu : ${menuList}">
-        <td th:text="${menu.id}"></td>
-        <td th:text="${menu.name}"></td>
-        <td th:text="${menu.category}"></td>
-        <td th:text="${menu.price}"></td>
-        <td th:text="${menu.availability}"></td>
-      </tr>
-    </table>
+    <section class="panel control-panel">
+      <form class="filter-row" method="get" th:action="@{/menu}">
+        <div class="search-box">
+          <span>⌕</span>
+          <input
+            type="text"
+            name="keyword"
+            th:value="${keyword}"
+            placeholder="Search specialty title or kitchen ingredients..."
+          />
+        </div>
+
+        <select name="sort">
+          <option value="popular" th:selected="${selectedSort == 'popular'}">
+            Sort: Most Popular
+          </option>
+          <option
+            value="price-low"
+            th:selected="${selectedSort == 'price-low'}"
+          >
+            Sort: Price Low to High
+          </option>
+          <option
+            value="price-high"
+            th:selected="${selectedSort == 'price-high'}"
+          >
+            Sort: Price High to Low
+          </option>
+        </select>
+
+        <select name="category">
+          <option value="all" th:selected="${selectedCategory == 'all'}">
+            All Categories
+          </option>
+          <option value="Mains" th:selected="${selectedCategory == 'Mains'}">
+            Mains
+          </option>
+          <option
+            value="Beverages"
+            th:selected="${selectedCategory == 'Beverages'}"
+          >
+            Beverages
+          </option>
+          <option
+            value="Desserts"
+            th:selected="${selectedCategory == 'Desserts'}"
+          >
+            Desserts
+          </option>
+          <option
+            value="Appetizers"
+            th:selected="${selectedCategory == 'Appetizers'}"
+          >
+            Appetizers
+          </option>
+        </select>
+
+        <button class="ghost-button" type="submit">Presence Status</button>
+        <a class="ghost-button" href="/menu">Clear</a>
+      </form>
+
+      <div class="category-chips">
+        <a class="chip active" href="/menu">All Categories</a>
+        <a class="chip" href="/menu?category=Appetizers"
+          >Appetizers &amp; Starters</a
+        >
+        <a class="chip" href="/menu?category=Mains">Main Courses</a>
+        <a class="chip" href="/menu?category=Chef%27s%20Highlights"
+          >Chef&apos;s Highlights</a
+        >
+        <a class="chip" href="/menu?category=Desserts">Desserts &amp; Sweets</a>
+        <a class="chip" href="/menu?category=Beverages">Curated Beverages</a>
+      </div>
+
+      <div class="catalog-meta">
+        <div>
+          <span class="stat-label">Catalog Match</span>
+          <strong th:text="${catalogMatchCount}">0 items</strong>
+        </div>
+        <a class="primary-button" href="/addMenu">Add Menu Item</a>
+      </div>
+    </section>
+
+    <section class="menu-grid">
+      <article class="menu-card" th:each="menu : ${menuList}">
+        <div class="menu-image-wrap">
+          <img th:src="${menu.imagePath}" th:alt="${menu.name}" />
+          <span class="availability-pill" th:text="${menu.availability}"
+            >Available</span
+          >
+        </div>
+
+        <div class="menu-card-body">
+          <div class="menu-headline">
+            <span class="category-tag" th:text="${menu.category}"
+              >Category</span
+            >
+            <strong th:text="${'$' + #numbers.formatDecimal(menu.price, 1, 2)}"
+              >$0.00</strong
+            >
+          </div>
+          <h2 th:text="${menu.name}">Menu Item</h2>
+          <p th:text="${menu.description}">Description</p>
+
+          <div class="menu-actions">
+            <a
+              class="ghost-button small"
+              th:href="@{/editMenu/{id}(id=${menu.id})}"
+              >Edit</a
+            >
+            <form th:action="@{/deleteMenu/{id}(id=${menu.id})}" method="post">
+              <button class="danger-button small" type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </article>
+    </section>
   </body>
 </html>

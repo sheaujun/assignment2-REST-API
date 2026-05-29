@@ -1,40 +1,129 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Add Menu</title>
+    <title th:text="${pageTitle}">Menu Form</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
   </head>
 
-  <body>
-    <h1>Add New Menu Item</h1>
+  <body class="page-shell">
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">Master Menu Catalog Management System</div>
+        <h1 th:text="${pageTitle}">Add New Menu Item</h1>
+        <p class="subtitle" th:text="${formSubtitle}">
+          Upload a menu image and store it in the shared uploads folder.
+        </p>
+      </div>
+      <a class="ghost-button" href="/menu">Back to menu</a>
+    </div>
 
-    <form th:action="@{/save}" th:object="${menuItem}" method="post">
-      <label>Menu Name:</label>
-      <input type="text" th:field="*{name}" required />
-      <br /><br />
+    <section class="panel form-panel">
+      <form
+        th:action="@{/save}"
+        th:object="${menuItem}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{imagePath}" />
 
-      <label>Category:</label>
-      <input type="text" th:field="*{category}" required />
-      <br /><br />
+        <div class="form-grid">
+          <div class="field">
+            <label>Menu Name</label>
+            <input
+              type="text"
+              th:field="*{name}"
+              placeholder="Reserve Wagyu Truffle Burger"
+              required
+            />
+          </div>
 
-      <label>Price:</label>
-      <input type="number" step="0.01" th:field="*{price}" required />
-      <br /><br />
+          <div class="field">
+            <label>Category</label>
+            <input
+              type="text"
+              th:field="*{category}"
+              placeholder="Mains, Beverages, Desserts"
+              required
+            />
+          </div>
 
-      <label>Availability:</label>
+          <div class="field">
+            <label>Price</label>
+            <input
+              type="number"
+              step="0.01"
+              th:field="*{price}"
+              placeholder="28.00"
+              required
+            />
+          </div>
 
-      <select th:field="*{availability}">
-        <option value="Available">Available</option>
+          <div class="field">
+            <label>Availability</label>
+            <select th:field="*{availability}">
+              <option value="Available">Available</option>
+              <option value="Unavailable">Unavailable</option>
+            </select>
+          </div>
 
-        <option value="Unavailable">Unavailable</option>
-      </select>
+          <div class="field field-full">
+            <label>Description</label>
+            <textarea
+              th:field="*{description}"
+              rows="5"
+              placeholder="Short menu description"
+              required
+            ></textarea>
+          </div>
 
-      <br /><br />
+          <div class="field field-full">
+            <label>Image</label>
+            <div class="image-upload-box">
+              <input
+                th:if="${editMode}"
+                type="file"
+                name="imageFile"
+                accept="image/*"
+              />
+              <input
+                th:unless="${editMode}"
+                type="file"
+                name="imageFile"
+                accept="image/*"
+                required
+              />
+              <p>
+                <span th:if="${editMode}"
+                  >Upload a new file to replace the current image.</span
+                >
+                <span th:unless="${editMode}"
+                  >The image is stored in the shared uploads folder and saved as
+                  a portable relative path.</span
+                >
+              </p>
+              <div
+                class="current-image"
+                th:if="${editMode and menuItem.imagePath != null}"
+              >
+                <span>Current image</span>
+                <img th:src="${menuItem.imagePath}" th:alt="${menuItem.name}" />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <button type="submit">Save Menu</button>
-    </form>
-
-    <br />
-
-    <a href="/menu"> Back to Menu List </a>
+        <div class="form-actions">
+          <button
+            class="primary-button"
+            type="submit"
+            th:text="${formButtonLabel}"
+          >
+            Save Menu
+          </button>
+          <a class="ghost-button" href="/menu">Cancel</a>
+        </div>
+      </form>
+    </section>
   </body>
 </html>

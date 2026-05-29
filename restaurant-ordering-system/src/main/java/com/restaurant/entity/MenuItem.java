@@ -11,9 +11,19 @@ public class MenuItem {
     private Long id;
 
     private String name;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     private String category;
-    private double price;
+
+    private Double price;
+
     private String availability;
+
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
 
     // Getter and Setter
 
@@ -33,6 +43,14 @@ public class MenuItem {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -41,11 +59,11 @@ public class MenuItem {
         this.category = category;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -55,5 +73,13 @@ public class MenuItem {
 
     public void setAvailability(String availability) {
         this.availability = availability;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
