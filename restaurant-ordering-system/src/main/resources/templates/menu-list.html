@@ -133,7 +133,10 @@
       <article class="menu-card" th:each="menu : ${menuList}">
         <div class="menu-image-wrap">
           <img th:src="${menu.imagePath != null && !#strings.isEmpty(menu.imagePath) ? menu.imagePath : '/uploads/placeholder.png'}" th:alt="${menu.name}" />
-          <span class="availability-pill" th:text="${menu.availability}"
+          <span
+            class="availability-pill"
+            th:classappend="${#strings.equalsIgnoreCase(menu.availability, 'Unavailable')} ? ' unavailable'"
+            th:text="${menu.availability}"
             >Available</span
           >
         </div>

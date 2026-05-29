@@ -532,6 +532,10 @@ h1 {
   font-size: 0.8rem;
 }
 
+.availability-pill.unavailable {
+  color: #dc2626;
+}
+
 .menu-card-body {
   padding: 16px 16px 18px;
 }
